@@ -75,19 +75,20 @@ app.get("/", async (req, res) => { // Default page.
                     await delay(3500); // Wait for 3.5 seconds between requests
                 }
                 currentAnimeIndex = 0;
-                }
+            }
             
-                const anime = animeList[currentAnimeIndex]; 
+            const anime = animeList[currentAnimeIndex]; 
 
-                const gifUrl = await searchAnimeGif(anime.title);
+            const gifUrl = await searchAnimeGif(anime.title);
 
-                res.render("index.ejs", {
+            res.render("index.ejs", {
+                url: anime.url,
                 imageUrl: anime.images.jpg.image_url,
                 gifUrl: gifUrl,
                 currCorrect: numCorrect,
                 message: message 
-                });
-                message = null; // Clear the message after rendering
+            });
+            message = null; // Clear the message after rendering
 
         } catch (error) {
             console.log(error.response ? error.response.data : error.message);
