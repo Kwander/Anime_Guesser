@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Top Anime</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&family=Titan+One&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="styles/main.css">
+</head>
+<body>
+  <h2>Top Anime: <%= currCorrect %></h2>
+  <div class="card" style="background: url('<%= imageUrl %>'); background-size: cover;">
+  </div>
+  <img src="<%= gifUrl %>">
+
+  <form action="/guess" method="POST">
+    <input name="guess">
+    <button type="submit">Enter</button>
+  </form>
+  <% if (message) { %>
+    <p><%= message %></p>
+  <% } %>
+
+  
+  <h2><%= title %> (<%= title_english %>)</h2>
+  <p><%= synopsis %></p>
+  <a href="<%= url %>" target="_blank">MAL link :]</a>
+</body>
+</html>
