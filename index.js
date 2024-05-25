@@ -24,6 +24,7 @@ async function fetchTopAnime(page) {
         let title = anime.title.split(':')[0].trim(); // Keep everything before the colon
         title = title.replace(/ season \d+/i, ''); // Remove 'season' followed by a number
         title = title.replace(/ \d+(st|nd|rd|th) season/i, ''); // Remove '1st', '2nd', '3rd', '4th', etc. followed by 'season'
+        title = title.replace(/ season \d+ part \d+/i, ''); // Remove 'season' followed by a number and 'part' followed by a number
         if (!uniqueAnimeTitles.has(title)) {
             uniqueAnimeTitles.add(title);
             return true;
@@ -33,6 +34,7 @@ async function fetchTopAnime(page) {
 
     return uniqueAnimes;
 }
+
 
 
 async function searchAnimeGif(query) {
@@ -59,40 +61,51 @@ let message = null; // Correct or incorrect
 
 
 app.get("/", async (req, res) => { // Default page.
-    try {
-        if (animeList.length === 0 || currentAnimeIndex >= animeList.length) {
-            // Fetch new data if there's no data or if we've gone through all the animes
-            //Will Update animeList with the top 100 animes upon loading.
-            for (let page = 1; page <= 4; page++) { // Fetch 4 pages of anime, 25 per page
-              const animePage = await fetchTopAnime(page);
-              animeList = animeList.concat(animePage);
-              await delay(3500); // Wait for 3.5 seconds between requests
-            }
-            currentAnimeIndex = 0;
-          }
-        
-          const anime = animeList[currentAnimeIndex]; // Get the first anime in the combined list
-        // Search for a GIF related to the anime title
+    if (numCorrect >= 3) {
+        res.redirect('/success'); // Redirect to the success page
+    } else {
+        try {
+            if (animeList.length === 0 || currentAnimeIndex >= animeList.length) {
+                res.render("intro.ejs", {});
 
-          const gifUrl = await searchAnimeGif(anime.title);
-        //renders the title, title in english, synposis, and url.
-
-          res.render("index.ejs", {
-            title: anime.title,
-            title_english: anime.title_english,
-            synopsis: anime.synopsis,
-            url: anime.url,
-            imageUrl: anime.images.jpg.image_url,
-            gifUrl: gifUrl,
-            currCorrect: numCorrect,
-            message: message // Pass the message to the template
-          });
-          message = null; // Clear the message after rendering
-
-    } catch (error) {
-        console.log(error.response ? error.response.data : error.message);
-        res.status(500).send("Error fetching anime data");
+                // Fetch new data if there's no data or if we've gone through all the animes
+                //Will Update animeList with the top 100 animes upon loading.
+                for (let page = 1; page <= 4; page++) { // Fetch 4 pages of anime, 25 per page
+                  const animePage = await fetchTopAnime(page);
+                  animeList = animeList.concat(animePage);
+                  await delay(3500); // Wait for 3.5 seconds between requests
+                }
+                currentAnimeIndex = 0;
+              }
+            
+              const anime = animeList[currentAnimeIndex]; // Get the first anime in the combined list
+            // Search for a GIF related to the anime title
+    
+              const gifUrl = await searchAnimeGif(anime.title);
+            //renders the title, title in english, synposis, and url.
+    
+              res.render("index.ejs", {
+                title: anime.title,
+                title_english: anime.title_english,
+                synopsis: anime.synopsis,
+                url: anime.url,
+                imageUrl: anime.images.jpg.image_url,
+                gifUrl: gifUrl,
+                currCorrect: numCorrect,
+                message: message // Pass the message to the template
+              });
+              message = null; // Clear the message after rendering
+    
+        } catch (error) {
+            console.log(error.response ? error.response.data : error.message);
+            res.status(500).send("Error fetching anime data");
+        }
     }
+});
+
+// Create a new route for the success page
+app.get('/success', (req, res) => {
+    res.render('congrats.ejs'); // Render the success page
 });
 
 

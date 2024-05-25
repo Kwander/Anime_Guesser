@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Anime Guesser</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: url('/public/images/curtains.png') no-repeat center center;
+            background-size: cover;
+            margin: 0;
+        }
+        .instructions {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="instructions">
+        <h1>Welcome to the Top 50 Most Popular Anime Guesser</h1>
+        <p>Do you know the top 50 most popular anime?</p>
+        <p>Just Write & Guess their names/abbreviations~~ Click anywhere to begin!</p>
+    </div>
+    <script>
+        document.body.addEventListener('click', function() {
+            window.location.href = '/';
+        });
+    </script>
+</body>
+</html>
