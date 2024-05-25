@@ -1,25 +1,23 @@
 :root {
-  --card-height: 65vh;
-  --card-width: calc(var(--card-height) / 1.5);
+  --card-height: 35vh;
 }
 
 body {
   min-height: 100vh;
-  background: #1f222c;
+  background: #f7ffe4;
   display: flex;
-  align-items: center;
   flex-direction: column;
   padding-top: 2rem;
   padding-bottom: 2rem;
   box-sizing: border-box;
 }
 
-h1 {
-  color: white;
+h2 {
+  color: #361800;
   font-family: "Georgia", cursive;
   margin-bottom: 20px;
+  text-shadow: 10px 10px 20px rgba(0, 0, 0, 0.2);
 }
-
 
 .user {
   color: white;
@@ -27,9 +25,8 @@ h1 {
   font-family: "Titan One", cursive;
 }
 
-/*animation stuff*/
-.card {
-  width: var(--card-width);
+/* Card and GIF container styling */
+.custom-card {
   height: var(--card-height);
   padding: 3px;
   position: relative;
@@ -41,13 +38,15 @@ h1 {
   font-size: 1.5em;
   color: rgb(88 199 250 / 0%);
   margin-bottom: 30px;
+  background: url('https://i.pinimg.com/originals/98/58/74/9858745cd157f2797065e639c5b3bf23.jpg') repeat-x;
 }
 
 
-.card::before {
+
+.custom-card::before {
   content: "";
-  width: 104%;
-  height: 102%;
+  width: 100%;
+  height: 100%;
   border-radius: 8px;
   background-image: linear-gradient(
     var(--rotate),
@@ -57,23 +56,22 @@ h1 {
   );
   position: absolute;
   z-index: -1;
-  top: -1%;
-  left: -2%;
+  top: 0;
+  left: 0;
   animation: spin 2.5s linear infinite;
 }
 
-.card::after {
+.custom-card::after {
   position: absolute;
   content: "";
-  top: calc(var(--card-height) / 6);
+  top: 0;
   left: 0;
   right: 0;
   z-index: -1;
   height: 100%;
   width: 100%;
   margin: 0 auto;
-  transform: scale(0.8);
-  filter: blur(calc(var(--card-height) / 6));
+  filter: blur(15px);
   background-image: linear-gradient(
     var(--rotate),
     #5ddcff,
@@ -84,7 +82,6 @@ h1 {
   transition: opacity 0.5s;
   animation: spin 2.5s linear infinite;
 }
-
 
 @property --rotate {
   syntax: "<angle>";
@@ -101,3 +98,61 @@ h1 {
   }
 }
 
+/* GIF styling */
+.gif-container {
+  height: var(--card-height);
+  padding: 3px;
+  position: relative;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.gif-container .custom-card {
+  width: 100%;
+  height: 100%;
+}
+
+.gif {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+/* Form styling */
+.form-inline {
+  margin-top: 30px;
+}
+
+.guess-text {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+/* Flower icon */
+.flower-icon {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+.flower {
+  width: 50px;
+  height: auto;
+}
+
+/* Footer styling */
+.footer {
+  background-color: #361800;
+  color: white;
+  text-align: center;
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+}
+
+.footer span {
+  font-family: "Georgia", cursive;
+}

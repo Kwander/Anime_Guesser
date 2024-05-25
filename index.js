@@ -4,7 +4,7 @@ import axios from "axios"; //importing axios
 let app = express(); //setting up express pt 1
 let port = 3000; //setting up express pt 2
 
-const GIPHY_API_KEY = "bVgkeHn33QMl2YJVHdojLfEpYmTH1MHp"; 
+const GIPHY_API_KEY = "bVgkeHn33QMl2YJVHdojLfEpYmTH1MHp";  
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
@@ -61,7 +61,7 @@ let message = null; // Correct or incorrect
 
 
 app.get("/", async (req, res) => { // Default page.
-    if (numCorrect >= 3) {
+    if (numCorrect >= 50) {
         res.redirect('/success'); // Redirect to the success page
     } else {
         try {
