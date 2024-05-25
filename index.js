@@ -78,7 +78,7 @@ app.get("/", async (req, res) => { // Default page.
             
             const anime = animeList[currentAnimeIndex]; 
 
-            const gifUrl = await searchAnimeGif(anime.title + "anime");
+            const gifUrl = await searchAnimeGif(anime.title);
             // const gifUrl = ""; Using this one once I ran out of API requests
 
             res.render("index.ejs", {
