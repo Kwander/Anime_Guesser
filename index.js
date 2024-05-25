@@ -74,12 +74,12 @@ app.get("/", async (req, res) => { // Default page.
                     animeList = animeList.concat(animePage);
                     await delay(3500); // Wait for 3.5 seconds between requests
                 }
-                currentAnimeIndex = 0;
             }
             
             const anime = animeList[currentAnimeIndex]; 
 
-            const gifUrl = await searchAnimeGif(anime.title);
+            const gifUrl = await searchAnimeGif(anime.title + "anime");
+            // const gifUrl = ""; Using this one once I ran out of API requests
 
             res.render("index.ejs", {
                 url: anime.url,
@@ -114,6 +114,13 @@ function takeFirstPartofTitle(str) {
 app.post("/guess", async (req, res) => {
     const userGuess = removeNonAlphabetical(req.body.guess);
 
+    // Check if the user's guess is an empty string
+    if (userGuess === "") {
+        message = "Please enter a guess.";
+        res.redirect("/");
+        return;
+    }
+
     const currentAnime = animeList[currentAnimeIndex];
     const title = removeNonAlphabetical(currentAnime.title);
     const titleEnglish = removeNonAlphabetical(currentAnime.title_english);
@@ -126,7 +133,7 @@ app.post("/guess", async (req, res) => {
         currentAnimeIndex++;
     } else {
         console.log("english:", titleEnglish, "\njapanese: " , titleJapanese, "\nsynonyms", titleSynonyms, "\ntakefirstpart: ", titleFirstPart);
-        message = "Sorry, that's not correct. Try again!";
+        message = "Sorry, that's not correct. Try again! (if you give up click on the left image)";
     }
 
     res.redirect("/");

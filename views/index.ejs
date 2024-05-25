@@ -9,14 +9,14 @@
       <img src="/images/flower.png" alt="Flower" class="flower">
     </div>
     <div class="container text-center">
-      <div class="row justify-content-center">
-        <div class="col-md-6">
-          <a href="<%= url %>">
-            <div class="card custom-card" style="background: url('<%= imageUrl %>'); background-size: contain;">
-            </div>
-          </a>
-        </div>
-      </div>
+        <h2>Correctly guessed Anime: <%= currCorrect %>/50</h2>
+        <div class="row justify-content-center">
+          <div class="col-md-6">
+            <a href="<%= url %>">
+              <div class="card custom-card" style="background: url('<%= imageUrl %>'); background-size: contain;">
+              </div>
+            </a>
+          </div>
           <div class="col-md-6">
             <div class="custom-card gif-container">
               <img class="gif" src="<%= gifUrl %>" alt="Description of GIF">
@@ -26,7 +26,7 @@
     <div class="mt-4">
       <form action="/guess" method="POST" class="form-inline justify-content-center">
         <p class="mr-2 guess-text">Enter the Correct anime name:</p>
-        <input name="guess" class="form-control mr-2">
+        <input name="guess" class="form-control mr-2" autofocus>
         <button type="submit" class="btn btn-primary">Enter</button>
       </form>
       <% if (message) { %>
