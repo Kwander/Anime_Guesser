@@ -2,11 +2,6 @@
 
 Think you can guess the top 50 most popular anime according to MyAnimeList? Challenge accepted! If you can match my anime knowledge, you might just earn the title of "otaku".
 
-<!-- ## Table of contents:
-1. Links
-2. JSON
--->
-
 ## 1. APIS used
 
 - [Axios](https://axios-http.com/docs/post_example) --api calls
@@ -19,5 +14,5 @@ To get started, open your terminal and execute the following commands in the roo
 
 ```
 npm install
-node index.js
+nodemon index.js
 ```

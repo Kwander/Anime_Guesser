@@ -1,25 +1,25 @@
-import express from "express"; //importing express
-import axios from "axios"; //importing axios
+import express from "express";
+import axios from "axios"; 
 
-let app = express(); //setting up express pt 1
-let port = 3000; //setting up express pt 2
+let app = express(); 
+let port = 3000; 
 
-const GIPHY_API_KEY = "bVgkeHn33QMl2YJVHdojLfEpYmTH1MHp";  
+const GIPHY_API_KEY = "bVgkeHn33QMl2YJVHdojLfEpYmTH1MHp";   // Giphy API key. Can only do 100 Req per Hour ;_;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-let uniqueAnimeTitles = new Set(); // Create a set to store unique anime titles
+/*This set and function fetchTopAnime will use an API call to jikan to fetch the top 100 anime. and Will then filter them using this set. Since in the top 100 anime there are also sequels like attack on titan Season 2 part 3 etc. Also adds anime before the colon for easier guessing.*/
+let uniqueAnimeTitles = new Set(); 
 
 async function fetchTopAnime(page) {
-    const response = await axios.get("https://api.jikan.moe/v4/top/anime", { //API call to fetch them by popularity
+    const response = await axios.get("https://api.jikan.moe/v4/top/anime", { 
         params: {
             page: page,
             filter: "bypopularity"
         }
     });
 
-    // Filter out sequels and only keep unique titles
     const uniqueAnimes = response.data.data.filter(anime => {
         let title = anime.title.split(':')[0].trim(); // Keep everything before the colon
         title = title.replace(/ season \d+/i, ''); // Remove 'season' followed by a number
@@ -36,7 +36,7 @@ async function fetchTopAnime(page) {
 }
 
 
-
+/**searches using Giphy API and key. For an image next to my page. only 100 per hour*/
 async function searchAnimeGif(query) {
     const response = await axios.get("https://api.giphy.com/v1/gifs/search", {
         params: {
@@ -49,8 +49,8 @@ async function searchAnimeGif(query) {
     return gifUrl;
 }
 
-
-function delay(ms) { //waits 3.5 seconds
+/**Can only fetch 25 anime and then must wait 3 seconds. So this will wait 3.5 seconds on its own*/
+function delay(ms) { 
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
@@ -59,7 +59,8 @@ let numCorrect = 0;
 let currentAnimeIndex = 0; // Keep track of the current anime
 let message = null; // Correct or incorrect
 
-
+/* * First run it will Render Show the intro page with instructions and fetch the top 100 most popular anime.
+* renders anime promo art(from anime json from jikan) and generated giphy from giphy using anime.title */
 app.get("/", async (req, res) => { // Default page.
     if (numCorrect >= 50) {
         res.redirect('/success'); // Redirect to the success page
@@ -68,34 +69,26 @@ app.get("/", async (req, res) => { // Default page.
             if (animeList.length === 0 || currentAnimeIndex >= animeList.length) {
                 res.render("intro.ejs", {});
 
-                // Fetch new data if there's no data or if we've gone through all the animes
-                //Will Update animeList with the top 100 animes upon loading.
                 for (let page = 1; page <= 4; page++) { // Fetch 4 pages of anime, 25 per page
-                  const animePage = await fetchTopAnime(page);
-                  animeList = animeList.concat(animePage);
-                  await delay(3500); // Wait for 3.5 seconds between requests
+                    const animePage = await fetchTopAnime(page);
+                    animeList = animeList.concat(animePage);
+                    await delay(3500); // Wait for 3.5 seconds between requests
                 }
                 currentAnimeIndex = 0;
-              }
+                }
             
-              const anime = animeList[currentAnimeIndex]; // Get the first anime in the combined list
-            // Search for a GIF related to the anime title
-    
-              const gifUrl = await searchAnimeGif(anime.title);
-            //renders the title, title in english, synposis, and url.
-    
-              res.render("index.ejs", {
-                title: anime.title,
-                title_english: anime.title_english,
-                synopsis: anime.synopsis,
-                url: anime.url,
+                const anime = animeList[currentAnimeIndex]; 
+
+                const gifUrl = await searchAnimeGif(anime.title);
+
+                res.render("index.ejs", {
                 imageUrl: anime.images.jpg.image_url,
                 gifUrl: gifUrl,
                 currCorrect: numCorrect,
-                message: message // Pass the message to the template
-              });
-              message = null; // Clear the message after rendering
-    
+                message: message 
+                });
+                message = null; // Clear the message after rendering
+
         } catch (error) {
             console.log(error.response ? error.response.data : error.message);
             res.status(500).send("Error fetching anime data");
@@ -103,21 +96,20 @@ app.get("/", async (req, res) => { // Default page.
     }
 });
 
-// Create a new route for the success page
+/**win condition Cute page*/
 app.get('/success', (req, res) => {
     res.render('congrats.ejs'); // Render the success page
 });
-
 
 //makes guessing titles easier
 function removeNonAlphabetical(str) {
     return str.replace(/[^a-z]/gi, '').toLowerCase();
 }
 function takeFirstPartofTitle(str) {
-    str = str.split(':')[0]; // Keep everything before the colon
+    str = str.split(':')[0]; // Keep everything before the colon. Noticed I needed this for "Demon Slayer: Kimetsu no yaiba". Everyone just calls it demon slayer so it should take it.
     return str.replace(/[^a-z]/gi, '').toLowerCase();
 }
-  
+/**Must make sure you can input titles in japanese as abbreviations, as first parts of the title(before colon), and all the synonyms included in the package */
 app.post("/guess", async (req, res) => {
     const userGuess = removeNonAlphabetical(req.body.guess);
 
@@ -141,6 +133,6 @@ app.post("/guess", async (req, res) => {
 
 
 
-app.listen(port, () => { //setting up express pt 3
+app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
