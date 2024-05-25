@@ -25,14 +25,12 @@ async function fetchTopAnime(page) {
         title = title.replace(/ season \d+/i, ''); // Remove 'season' followed by a number
         title = title.replace(/ \d+(st|nd|rd|th) season/i, ''); // Remove '1st', '2nd', '3rd', '4th', etc. followed by 'season'
         title = title.replace(/ season \d+ part \d+/i, ''); // Remove 'season' followed by a number and 'part' followed by a number
-        title = title.replace(/ √[A-Z]/, ''); // Remove ' √' followed by any uppercase letter for tokyo ghoul symbol
         if (!uniqueAnimeTitles.has(title)) {
             uniqueAnimeTitles.add(title);
             return true;
         }
         return false;
     });
-    
 
     return uniqueAnimes;
 }
